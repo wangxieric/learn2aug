@@ -53,14 +53,14 @@ def gen_ketod(json_in, sgd_folder_in, json_out, mode="train"):
 
 if __name__ == "__main__":
     root = "data/"
-    ketod_release = root + "KETOD/"
+    ketod_release = root + "KETOD/ketod_release/"
 
     ketod_release_train = ketod_release + "train_ketod.json"
     ketod_release_dev = ketod_release + "dev_ketod.json"
     ketod_release_test = ketod_release + "test_ketod.json"
 
     sgd = root + "SGD/"
-    target_folder = root + "Full_KETOD/"
+    target_folder = root + "KETOD/full_ketod/"
     if not os.path.exists(target_folder):
         os.mkdir(target_folder)
     full_train = target_folder + "train.json"
