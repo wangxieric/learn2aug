@@ -17,7 +17,7 @@ class parameters():
     # # test_file = root_path + "dataset/test.json"
     # # test_file = root_path + "dataset/train.json"
     # test_file = simpletod_path + "test_all_inter.json"
-    test_file = root_path + "processed_kg_select_dev.json"
+    test_file = root_path + "processed_kg_select_test.json"
 
     # model choice: bert, roberta, albert
     pretrained_model = "bert"
@@ -30,7 +30,7 @@ class parameters():
     device = "cuda"
     mode = "train"
     resume_model_path = ""
-    saved_model_path = output_path + "kg_select_bert_base_20210817231802/saved_model/loads/5/model.pt"
+    saved_model_path = output_path + "kg_select_bert_base_20231113223602/saved_model/loads/17/model.pt"
     build_summary = False
 
     option = "rand"
@@ -39,9 +39,9 @@ class parameters():
 
     # threshold for select snippets
     thresh = 0.5
-    tillaction_gold = False
+    tillaction_gold = True
     generate_all = True
-    if_fill_train = False
+    if_fill_train = True
     generate_all_neg_max = 30
 
     sep_attention = True
