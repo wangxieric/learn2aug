@@ -219,6 +219,9 @@ def read_examples(input_path, is_inference):
                     else:
                         if "tillaction_pred" in turn:
                             this_context = turn["tillaction_pred"]
+                    
+                    prev_user_turn_utter = each_data["turns"][ind-1]["utterance"]
+                    all_utter = prev_user_turn_utter + turn["utterance"]
 
                     this_pos_snippets = []
                     this_neg_snippets = []
@@ -260,6 +263,7 @@ def read_examples(input_path, is_inference):
                                 "dialog_id": this_dialog_id,
                                 "turn_id": this_turn_id,
                                 "context": this_context,
+                                "all_utterance": all_utter,
                                 "pos_snippets": this_pos_snippets,
                                 "neg_snippets": this_neg_snippets,
                                 "all_snippets": all_snippets,
@@ -284,6 +288,7 @@ def read_examples(input_path, is_inference):
                                 "dialog_id": this_dialog_id,
                                 "turn_id": this_turn_id,
                                 "context": this_context,
+                                "all_utterance": all_utter,
                                 "pos_snippets": this_pos_snippets,
                                 "neg_snippets": this_neg_snippets,
                                 "all_snippets": all_snippets,
@@ -356,6 +361,7 @@ def convert_single_example(
     all_features = []
 
     context = example["context"]
+    all_utterance = example["all_utterance"]
 
     # print("###### question ######")
     # print(question)
@@ -370,7 +376,7 @@ def convert_single_example(
             each_pos_snippet = tmp[1]
             this_input_feature = wrap_single_pair(
                 tokenizer,
-                context,
+                all_utterance, # or context with the labelled information
                 each_pos_snippet,
                 1,
                 max_seq_length,
@@ -388,7 +394,7 @@ def convert_single_example(
             each_neg_snippet = tmp[1]
             this_input_feature = wrap_single_pair(
                 tokenizer,
-                context,
+                all_utterance, # or context with the labelled information
                 each_neg_snippet,
                 0,
                 max_seq_length,
@@ -407,7 +413,7 @@ def convert_single_example(
             each_snippet = tmp[1]
             this_input_feature = wrap_single_pair(
                 tokenizer,
-                context,
+                all_utterance, # or context with the labelled information
                 each_snippet,
                 0,
                 max_seq_length,

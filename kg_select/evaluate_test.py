@@ -3,7 +3,7 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--result_repo", default='../data/outputs/inference_only_20231116112613_kg_select_bert_base_model2_new/results/test/', type=str, required=False, help="result file repository")
+    parser.add_argument("--result_repo", default='../data/outputs/inference_only_20231117130304_kg_select_bert_base_model2_new/results/test/', type=str, required=False, help="result file repository")
     parser.add_argument("--prediction_file", default="predictions.json", type=str, required=False, help="result file name")
 
     args = parser.parse_args()
