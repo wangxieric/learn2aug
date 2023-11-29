@@ -37,7 +37,7 @@ test_feature_file = os.path.join(results_path, 'this_features.txt')
 
 
 test_data, test_examples = \
-    read_examples(input_path=conf.test_file, is_inference=True)
+    read_examples(input_path=conf.train_file, is_inference=True)
 
 kwargs = {"examples": test_examples,
           "tokenizer": tokenizer,
@@ -109,7 +109,7 @@ def generate(data_ori, data, model, ksave_dir, mode='valid'):
             all_logits, all_dialog_id, all_turn_id, all_snippet_id, output_prediction_file, conf.valid_file, topn=conf.topn, is_inference=True)
     else:
         print_res = retrieve_evaluate(
-            all_logits, all_dialog_id, all_turn_id, all_snippet_id, output_prediction_file, conf.test_file, topn=conf.topn, is_inference=True)
+            all_logits, all_dialog_id, all_turn_id, all_snippet_id, output_prediction_file, conf.train_file, topn=conf.topn, is_inference=True)
 
     write_log(log_file, print_res)
     print(print_res)
