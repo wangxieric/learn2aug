@@ -50,7 +50,9 @@ def set_seed(args):
 
 
 args = parser.parse_args()
+print('available: ', torch.cuda.is_available())
 args.device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+print("args.device: ", args.device)
 args.n_gpu = 0 if args.no_cuda else torch.cuda.device_count()
 
 model_dir_name = args.model_save_name + "_" + \
@@ -162,7 +164,7 @@ for attr in args.__dict__:
     write_log(log_file, attr + " = " + str(value))
 write_log(log_file, "#######################################################")
 
-for _ in range(args.max_epoch):
+for epoch in range(args.max_epoch):
 
     # subsample negative examples?
     # random.shuffle(prompts_chitchat)
@@ -172,8 +174,8 @@ for _ in range(args.max_epoch):
     else:
         prompts = prompts_chitchat + prompts_nochitchat
     random.shuffle(prompts)
-
-    for batch in range(num_batch):
+    print("Epoch: ", epoch)
+    for batch in tqdm(range(num_batch)):
 
         prompt_text = prompts[batch * batch_size: (batch + 1) * batch_size]
 
