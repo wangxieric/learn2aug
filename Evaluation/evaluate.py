@@ -1,6 +1,6 @@
 import gem_metrics
 
-pred_dir = '/home/xwang/learn2aug/data/SimpleTOD/outputs/inference_only_model1_gold_action_retrieved_kg_gold_decision/results/reformatted_result_final.txt'
+pred_dir = '/home/xwang/learn2aug/data/SimpleTOD/outputs/inference_only_model1_gold_action_retrieved_kg_gold_decision/results/reformatted_result_final_noisy_knowledge.txt'
 ref_dir = '/home/xwang/learn2aug/data/KETOD/full_ketod/test_system_utterances.txt'
 
 with open(pred_dir, 'r') as f:

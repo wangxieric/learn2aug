@@ -73,8 +73,8 @@ log_file = os.path.join(results_path, 'log.txt')
 
 result_file_belief = os.path.join(results_path, 'result_belief.json')
 result_file_action = os.path.join(results_path, 'result_action.json')
-result_file_knowledge = os.path.join(results_path, 'result_knowledge.json')
-result_file_final = os.path.join(results_path, 'result_final.json')
+result_file_knowledge = os.path.join(results_path, 'result_noisy_knowledge.json')
+result_file_final = os.path.join(results_path, 'result_final_noisy_knowledge.json')
 
 
 set_seed(args)
@@ -429,6 +429,7 @@ def add_selected_kg():
 
     res = []
     ind = 0
+    count = 0
     for each_data in data_all:
         for turn in each_data["turns"]:
             if turn["speaker"] == "SYSTEM":
@@ -445,16 +446,108 @@ def add_selected_kg():
                         for each_snippet in each_passage[1:]:
                             if int(each_snippet[0]) in selected_kg_snippets:
                                 this_kg_text.append(passage_title + " " + each_snippet[1])
+                                count += 1
+                res.append(this_pre_gen + ' <|knowledge|> ' + " ".join(this_kg_text) + ' <|endofknowledge|>')
+
+
+    assert ind == len(prompts_action)
+    print("count: ", count)
+    with open(result_file_knowledge, "w") as f:
+        json.dump(res, f, indent=4)
+
+# step 4 (alternate): add selected golden knowledge
+def add_gold_selected_kg():
+
+
+    with open(result_file_action, "r") as f:
+        prompts_action = json.load(f)
+
+    with open(args.test_inter_res, "r") as f:
+        data_all = json.load(f)
+
+
+    res = []
+    ind = 0
+    # count = 0 
+    for each_data in data_all:
+        for turn in each_data["turns"]:
+            if turn["speaker"] == "SYSTEM":
+                this_pre_gen = prompts_action[ind]
+                ind += 1
+
+                selected_kg_snippets = turn["retrieved"]
+                this_kg_text = []
+
+                for each_query in turn["entity_passages_sents_pred"]:
+                    for each_passage in turn["entity_passages_sents_pred"][each_query]:
+                        passage_title = each_passage[0]
+
+                        for each_snippet in each_passage[1:]:
+                            # only use the selected snippets that are also relevant as per the ground-truth
+                            if "kg_snippets" in turn:
+                                relevant_kg_snippets = turn["kg_snippets"]
+                                if int(each_snippet[0]) in selected_kg_snippets and int(each_snippet[0]) in relevant_kg_snippets:
+                                    # count += 1
+                                    this_kg_text.append(passage_title + " " + each_snippet[1])
 
                 res.append(this_pre_gen + ' <|knowledge|> ' + " ".join(this_kg_text) + ' <|endofknowledge|>')
 
 
     assert ind == len(prompts_action)
-
+    # print("count: ", count)
     with open(result_file_knowledge, "w") as f:
         json.dump(res, f, indent=4)
 
 
+# step 4 (alternate): add noisy knowledge
+def add_noisy_kg():
+
+
+    with open(result_file_action, "r") as f:
+        prompts_action = json.load(f)
+
+    with open(args.test_inter_res, "r") as f:
+        data_all = json.load(f)
+
+
+    res = []
+    ind = 0
+    count = 0 
+    for each_data in data_all:
+        for turn in each_data["turns"]:
+            if turn["speaker"] == "SYSTEM":
+                this_pre_gen = prompts_action[ind]
+                ind += 1
+
+                selected_kg_snippets = turn["retrieved"]
+                this_kg_text = []
+
+                for each_query in turn["entity_passages_sents_pred"]:
+                    for each_passage in turn["entity_passages_sents_pred"][each_query]:
+                        passage_title = each_passage[0]
+
+                        for each_snippet in each_passage[1:]:
+                            # only use the selected snippets that are also relevant as per the ground-truth
+                            if count > 294:
+                                break
+                            if "kg_snippets" in turn:
+                                relevant_kg_snippets = turn["kg_snippets"]
+                                if int(each_snippet[0]) in selected_kg_snippets and int(each_snippet[0]) not in relevant_kg_snippets:
+                                    count += 1
+                                    this_kg_text.append(passage_title + " " + each_snippet[1])
+                            else:
+                                if int(each_snippet[0]) in selected_kg_snippets:
+                                    count += 1
+                                    this_kg_text.append(passage_title + " " + each_snippet[1])
+                            
+
+                res.append(this_pre_gen + ' <|knowledge|> ' + " ".join(this_kg_text) + ' <|endofknowledge|>')
+
+
+    assert ind == len(prompts_action)
+    # print("count: ", count)
+    with open(result_file_knowledge, "w") as f:
+        json.dump(res, f, indent=4)
 
 # step 5: gen response
 def gen_response():
@@ -537,9 +630,14 @@ def gen_response_retrieved_kg_gold_decision():
 # # step 4:
 # add_selected_kg()
 
+# an alternative to step 4, which add only the knowledge that is relevant by comparing to the ground-truth 
+# add_gold_selected_kg()
+
+# another alternative to step 4, which add random noisy knowledge
+# add_noisy_kg()
+
 # # step 5:
 gen_response()
-
 
 
 ### test with gold kg
