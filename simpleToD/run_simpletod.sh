@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=1
 
 root_path="/home/xwang/learn2aug/data/"
 
@@ -20,7 +20,7 @@ root_path="/home/xwang/learn2aug/data/"
 
 # # test retrieved
 python test_simpletod.py \
---saved_model_path="model1_rand_20231129213354/saved_model/loads/18/model.pt" --output_path="${root_path}SimpleTOD/outputs/" \
+--saved_model_path="model1_rand_20231129213354/saved_model/loads/19/model.pt" --output_path="${root_path}SimpleTOD/outputs/" \
 --model_dir_name="model1_gold_action_retrieved_kg_gold_decision" \
 --test_input="${root_path}SimpleTOD/processed/model1.lm.input.eval.test_retrieved.txt" \
 --test_input_gold_action="${root_path}SimpleTOD/processed/model1.lm.input.eval.goldaction.test_retrieved.txt" \
@@ -37,3 +37,4 @@ python test_simpletod.py \
 --batch_size=1 \
 --max_seq_len=1024 \
 --gold_action \
+
